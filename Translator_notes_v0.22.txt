@@ -1,0 +1,17 @@
+Translator Notes
+version  0.22
+Cuga Rajal, January 26 2018
+
+1) There is no on-off option. Wear it to translate, remove it to turn off. Click the HUD to open the menu. Compatible with Opensim and Second Life.
+
+2) It assumes the owner of the HUD speaks a different language than those in local chat. The HUD owner can select the source (owner's) language and target (local chat) language. It does not require the local chat to be English. 
+
+3) When the HUD owner types in local chat, their chat message is sent for translation from the source language to the target language. Translated phrases are sent to local chat with llSay, so everyone in chat range can see it. To reduce chat clutter, if the translated phrase is the same as the original, it will not be sent to local chat. This can happen if the HUD owner is already speaking in the target language, or if the translation service doesn't recognize the language.
+
+4) When others speak in local chat (not the HUD owner) the phrases are sent for translation in the reverse direction. Chat messages are translated from the target language to the source language. The translated phrase is then sent only to the HUD owner's local chat with llOwnerSay(), so only the HUD owner sees it. If the translated phrase is the same as the original, it will not be sent to local chat.
+
+This is a work in progress. Please let me know if you find any bugs or have features you would like added.
+
+Cuga Rajal (Second Life and OSGrid)
+cugarajal@gmail.com
+Deep Playa: http://rajal.org:9000
