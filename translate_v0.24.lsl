@@ -1,17 +1,12 @@
-// Open Translate v.0.23 - Jan 27 2018
+// Open Translate v.0.24 - Jan 27 2018
 // by Xiija Anzu and Cuga Rajal
 //
 // Put this script in a HUD and wear it. Click the HUD to open the configuration dialog and set language choices.
 // This translator assumes the HUD owner speaks a different language than the local chat.
-// When the HUD owner types in local chat, it will be translated from the source language to the target language.
-// The translated phrase will be printed to local chat with llSay(), seen by everyone in chat distance.
-// When other people speak in local chat, their phrases are translated from the target language to source language.
-// Others' translated phrases will be printed only to the HUD owner's local chat with llOwnerSay().
-// Translated phrases are printed to local chat only if they are different from the original phrase.
-// Translated phrases are not re-translated by other people's translatiors. Only the original phrase is translated.
+// More information at https://github.com/cuga-rajal/translator/blob/master/README.md
 // There is a limit of 16kb per translation. Anything exceeding that is truncated.
 
-string version = "0.23";
+string version = "0.24";
 key  XMLRequest;
 string sourceLang = "es"; // language of the HUD owner, can be changed from setup dialog
 string targetLang = "en"; // common language in local chat, can be changed from setup dialog
@@ -29,8 +24,7 @@ integer currPG = 0;
 integer i;
 string langselect = "";
 integer active = 1;
-// string SLslurl = "http://maps.secondlife.com/secondlife/Burning%20Man-%20Deep%20Hole/232/88/25"; // for SL
-string SLslurl = "http://rajal.org:9000";  // For Opensim
+string SLslurl = "http://maps.secondlife.com/secondlife/Burning%20Man-%20Deep%20Hole/232/88/25";
  
 
 list langs = 
@@ -80,8 +74,8 @@ default {
         listenHandle = llListen(0, "","", "");
         name = llGetDisplayName(llGetOwner());
         llOwnerSay("Resetting...\nOpen Translator " + version + " by Cuga Rajal and Xiija Anzu\n" +
-                "Get your free copy at " + SLslurl +
-                "\nLatest source code at https://github.com/cuga-rajal");
+                "Get your free copy in SL at " + SLslurl +
+                "\nInstructions at https://github.com/cuga-rajal/translator/blob/master/README.md");
     }
     
     touch_start(integer total_number) {   
@@ -122,7 +116,8 @@ default {
         if (vIntChn == 0 ) {
             msg =  vStrMsg;   
             name = llGetDisplayName(vKeySpk);
-            if(llGetDisplayName(llGetKey())=="") { jump skiptrans; }
+            llOwnerSay("name: '" + name + "'");
+            if(name=="") { jump skiptrans; }
             url2 = "http://translate.googleapis.com/translate_a/single?client=gtx&sl=&dt=t&ie=UTF-8&oe=UTF-8";
             if(llGetDisplayName(llGetOwner())==name) { url2 += "&sl=" + sourceLang + "&tl=" + targetLang; }
             else { url2 += "&sl=" + targetLang + "&tl=" + sourceLang;  }
