@@ -3,8 +3,8 @@
 //
 // Put this script in a HUD and wear it. Click the HUD to open the configuration dialog and set language choices.
 // This translator assumes the HUD owner speaks a different language than the local chat.
-// More information at https://github.com/cuga-rajal/translator/blob/master/README.md
-// There is a limit of 16kb per translation. Anything exceeding that is truncated.
+// More information at https://github.com/cuga-rajal/translator
+
 
 string version = "0.24";
 key  XMLRequest;
@@ -75,7 +75,7 @@ default {
         name = llGetDisplayName(llGetOwner());
         llOwnerSay("Resetting...\nOpen Translator " + version + " by Cuga Rajal and Xiija Anzu\n" +
                 "Get your free copy in SL at " + SLslurl +
-                "\nInstructions at https://github.com/cuga-rajal/translator/blob/master/README.md");
+                "\nInstructions at https://github.com/cuga-rajal/translator");
     }
     
     touch_start(integer total_number) {   
@@ -116,7 +116,6 @@ default {
         if (vIntChn == 0 ) {
             msg =  vStrMsg;   
             name = llGetDisplayName(vKeySpk);
-            llOwnerSay("name: '" + name + "'");
             if(name=="") { jump skiptrans; }
             url2 = "http://translate.googleapis.com/translate_a/single?client=gtx&sl=&dt=t&ie=UTF-8&oe=UTF-8";
             if(llGetDisplayName(llGetOwner())==name) { url2 += "&sl=" + sourceLang + "&tl=" + targetLang; }

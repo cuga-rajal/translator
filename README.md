@@ -17,14 +17,12 @@ How to use:
 source language, target language, or to enable/disable translation. 
 
 2) It assumes the owner of the HUD speaks a different language than
-those in local chat. The HUD owner can select the source (owner's)
-language and target (local chat) language.
+those in local chat. The "source" should be set to the HUD owner's
+language, and "target" should be set to the local chat language.
 
 3) Everyone wearing the HUD in proximity should use the same target
 language for local chat. Otherwise, you may get duplication of
-translated phrases in  local chat. If two people want to chat in 
-languages that are different from local chat, it is best to take that
-to private IM to avoid unnecessary translations sent to all nearby.
+translated phrases in local chat.
 
 4) When the HUD owner types in local chat, their chat message is sent
 for translation from the source language to the target language.
@@ -40,6 +38,8 @@ translated from the target language to the source language. The
 translated phrase is then sent only to the HUD owner's local chat with
 llOwnerSay(), so only the HUD owner sees it. If the translated phrase is
 the same as the original, it will not be sent to local chat.
+
+There is a limit of 16kb per translation. Anything exceeding that is truncated.
 
 This is a work in progress. Please notify me of bugs or feature requests.
 
