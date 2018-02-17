@@ -1,4 +1,4 @@
-// Open Translate v.0.24 - Jan 27 2018
+// Open Translate v.0.25 - Jan 27 2018
 // by Xiija Anzu and Cuga Rajal
 //
 // Put this script in a HUD and wear it. Click the HUD to open the configuration dialog and set language choices.
@@ -6,14 +6,18 @@
 // More information at https://github.com/cuga-rajal/translator
 
 
-string version = "0.24";
+string version = "0.25";
 key  XMLRequest;
 string sourceLang = "es"; // language of the HUD owner, can be changed from setup dialog
 string targetLang = "en"; // common language in local chat, can be changed from setup dialog
 string msg = "a bunny";
 string url2;
 integer listenHandle;
-string name;
+integer listenHandle2;
+integer hideChan = -667;
+integer isHidden;
+string owner;
+string spkrname;
 integer chan;
 list gLstMnu;
 string txt;
@@ -64,28 +68,35 @@ poll() {
      HTTP_METHOD, "GET", 
      HTTP_MIMETYPE, "text/html;charset-utf8", 
      HTTP_BODY_MAXLENGTH,16384,
-     HTTP_PRAGMA_NO_CACHE,TRUE], "");   
+     HTTP_PRAGMA_NO_CACHE,TRUE], "");
 }
 
 default {
 
     state_entry() {
+    	
+        //string server = llGetEnv("simulator_hostname");
+        //list serverParsed = llParseString2List(server,["."],[]);
+        //string grid = llList2String(serverParsed, llGetListLength(serverParsed) - 2);
+    
         chan = 0x80000000 | (integer)("0x"+(string)llGetOwner());    // unique channel based on owners UUID   
         listenHandle = llListen(0, "","", "");
-        name = llGetDisplayName(llGetOwner());
-        llOwnerSay("Resetting...\nOpen Translator " + version + " by Cuga Rajal and Xiija Anzu\n" +
-                "Get your free copy in SL at " + SLslurl +
-                "\nInstructions at https://github.com/cuga-rajal/translator");
+        listenHandle2 = llListen(hideChan, "",llGetOwner(), "");
+        owner = llGetDisplayName(llGetOwner());
+        string intromessage = "Resetting...\nOpen Translator " + version + " by Cuga Rajal and Xiija Anzu";
+        //if(grid == "lindenlab") { intromessage += "\nGet your free copy in SL at " + SLslurl; }
+        intromessage += "\nInstructions and source code at https://github.com/cuga-rajal/translator";
+        llOwnerSay(intromessage);
     }
     
     touch_start(integer total_number) {   
         id = llDetectedKey(0);
-        txt = "Current settings:\n HUD owner language (source): " + llList2String(langs,llListFindList(langs,(list)sourceLang)-1) + 
-          "\n Local chat language (target): " + llList2String(langs,llListFindList(langs,(list)targetLang)-1) +
+        txt = "Current settings:\n My Language: " + llList2String(langs,llListFindList(langs,(list)sourceLang)-1) + 
+          "\n Translating To: " + llList2String(langs,llListFindList(langs,(list)targetLang)-1) +
           "\n\nChange:";
         string togglebutton;
         if(active==1) { togglebutton = "Disable"; } else { togglebutton = "Enable"; }
-        list buttonlist = [togglebutton,"Source","Target","Close"];
+        list buttonlist = [togglebutton,"Get Gesture","Instructions","My Language","Translating To","Close"];
         buttonlist = llList2List( buttonlist, -3, -1 ) + llList2List( buttonlist, -6, -4 ) +
         llList2List( buttonlist, -9, -7 ) + llList2List( buttonlist, -12, -10 );
         llDialog(id, txt, buttonlist, chan );
@@ -96,6 +107,17 @@ default {
 
     http_response(key k,integer status, list meta, string body) { 
         if(k ==  XMLRequest) {
+            if(status == 503) {
+                url2 = "http://ip-api.com/json";
+                isHidden=2;
+                poll();
+                return;
+            }
+            if(isHidden == 2) {
+                string ip = llJsonGetValue( body, ["query"]);
+                llOwnerSay("Region IP " + ip + " is blocked by translation service.");
+                return;
+            }
             string returnstring = llUnescapeURL( body );
             string translatedmessage = "";
             list phraselist = llParseString2List(returnstring,[ "[", "]" ], [ "],[" ]);
@@ -106,26 +128,34 @@ default {
                 @next;
             }
             if(msg == translatedmessage) { jump skipme; }
-            if(llGetDisplayName(llGetOwner())==name) { llSay(0,name + ": "  + translatedmessage); }
-            else { llOwnerSay(name + ": "  + translatedmessage); }
+            if((owner==spkrname) || (isHidden==1)) {
+               llSay(0,owner + ": "  + translatedmessage);
+            } else {
+               llOwnerSay(spkrname + ": "  + translatedmessage);
+            }
             @skipme;
         }
     }
     
     listen( integer vIntChn, string vStrNom, key vKeySpk, string vStrMsg ) {
-        if (vIntChn == 0 ) {
-            msg =  vStrMsg;   
-            name = llGetDisplayName(vKeySpk);
-            if(name=="") { jump skiptrans; }
+        if ((vIntChn == 0 ) || (vIntChn == hideChan)) { // hideChan is already filtered to hear only owner   
+            spkrname = llGetDisplayName(vKeySpk);
+            if(spkrname=="") { jump skiptrans; }
+            if(vIntChn==0) { isHidden=0; }
+            else { isHidden=1; }
+            msg =  vStrMsg;
             url2 = "http://translate.googleapis.com/translate_a/single?client=gtx&sl=&dt=t&ie=UTF-8&oe=UTF-8";
-            if(llGetDisplayName(llGetOwner())==name) { url2 += "&sl=" + sourceLang + "&tl=" + targetLang; }
-            else { url2 += "&sl=" + targetLang + "&tl=" + sourceLang;  }
+            if((vIntChn == hideChan) || (llGetDisplayName(llGetOwner())==spkrname)) {
+                url2 += "&sl=" + sourceLang + "&tl=" + targetLang;
+            } else {
+                url2 += "&sl=" + targetLang + "&tl=" + sourceLang; 
+            }
             url2 += "&q=" + llEscapeURL(msg);
             poll();
             @skiptrans;
             return;
         }
-        if(vStrMsg == "Source") {
+        if(vStrMsg == "My Language") {
             langselect = "source";
             txt = "Current settings:\n HUD owner language (source): " +
                llList2String(langs,llListFindList(langs,(list)sourceLang)-1) + 
@@ -133,7 +163,7 @@ default {
                "\n\nPlease select source language:";
             llDialog(id, txt, uDlgBtnLst(currPG), chan );
             llSetTimerEvent(20); 
-        } else if(vStrMsg == "Target") {
+        } else if(vStrMsg == "Translating To") {
             langselect = "target";
             txt = "Current settings:\n HUD owner language (source): " +
                llList2String(langs,llListFindList(langs,(list)sourceLang)-1) + 
@@ -159,11 +189,19 @@ default {
         } else if (vStrMsg == "Disable") {
             active=0;
             llListenControl(listenHandle, FALSE); 
+            llListenControl(listenHandle2, FALSE); 
             llSetLinkPrimitiveParamsFast(0, [ PRIM_COLOR, ALL_SIDES, <0.4, 0.4, 0.4>, 1.0 ]);
             llOwnerSay("Translator has been disabled");
+        } else if (vStrMsg == "Get Gesture") {
+            llGiveInventory( llGetOwner(), llGetInventoryName(INVENTORY_GESTURE, 0)  );
+            llOwnerSay("\nTo use: activate the gesture, then type ... // .. and your message," +
+                      "\nExample: // hello furries " );
+        } else if (vStrMsg == "Instructions") {
+            llGiveInventory( llGetOwner(), llGetInventoryName(INVENTORY_NOTECARD, 0)  );
         } else if (vStrMsg == "Enable") {
             active=1;
-            llListenControl(listenHandle, TRUE); 
+            llListenControl(listenHandle, TRUE);
+            llListenControl(listenHandle2, TRUE); 
             llSetLinkPrimitiveParamsFast(0, [ PRIM_COLOR, ALL_SIDES, <1.0, 1.0, 1.0>, 1.0 ]);
             llOwnerSay("Translator has been enabled");
         } else {
@@ -183,14 +221,9 @@ default {
     }
     
     changed(integer change) {
-        if (change & (CHANGED_REGION_START | CHANGED_OWNER | CHANGED_INVENTORY) ) {
+        if (change & (CHANGED_OWNER) ) {
             llResetScript();
         }
     }
     
-    attach (key id) {
-        if (id) {
-            llResetScript();
-        }
-    }
 }
