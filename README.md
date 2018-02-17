@@ -3,7 +3,7 @@ Translator Notes
 version  0.25
 Cuga Rajal, February 17, 2018
 
-This is a free language translator by Cuga Rajal and Xija Anzu.
+This is a free language translator by Cuga Rajal and Xiija Anzu.
 Compatible with Opensim and Second Life.
 
 Get the latest version of the script from: https://github.com/cuga-rajal
