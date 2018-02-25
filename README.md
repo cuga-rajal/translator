@@ -1,7 +1,7 @@
 # translator
 Translator Notes
-version  0.25
-Cuga Rajal, February 17, 2018
+version  0.26
+Cuga Rajal, February 24, 2018
 
 This is a free language translator by Cuga Rajal and Xiija Anzu.
 Compatible with Opensim and Second Life.
@@ -11,16 +11,24 @@ Get the latest version of the script from: https://github.com/cuga-rajal
 In Second Life you can get a Translator at the Burn2 region:
   http://maps.secondlife.com/secondlife/Burning%20Man-%20Deep%20Hole/232/88/25
 
+This work is licensed under the Creative Commons BY-NC-SA 3.0 License.
+To view a copy of the license, visit:
+  https://creativecommons.org/licenses/by-nc-sa/3.0/
+
+
 How to use:
 
 1) Wear the Translator as a HUD. Click the Translator to open the dialog. The
 dialog can be used to change the source language, target language, or to
 enable/disable translation. It can also give the gesture object (see below)
-or to get a copy of these instructions.
+or to get these instructions.
 
-2) The Translator assumes the owner of the HUD speaks a different language then
+2) The Translator can be used when the HUD owner speaks a different language than
 local chat. The "source language" should be set to the HUD owner's language, and
 "target language" should be set to the local chat language.
+
+The first time you wear the HUD, it will detect your viewer preference settings and 
+configure the source language automatically.
 
 3) For best results, everyone wearing the HUD in proximity should use the same
 target language for local chat. Otherwise you may get duplication of translated

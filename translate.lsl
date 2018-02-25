@@ -1,12 +1,15 @@
-// Open Translate v.0.25 - Jan 27 2018
+// Open Translate v.0.26 - Feb 24 2018
 // by Xiija Anzu and Cuga Rajal
 //
 // Put this script in a HUD and wear it. Click the HUD to open the configuration dialog and set language choices.
 // This translator assumes the HUD owner speaks a different language than the local chat.
 // More information at https://github.com/cuga-rajal/translator
+//
+// This work is licensed under the Creative Commons BY-NC-SA 3.0 License.
+// To view a copy of the license, visit:
+//  https://creativecommons.org/licenses/by-nc-sa/3.0/
 
-
-string version = "0.25";
+string version = "0.26";
 key  XMLRequest;
 string sourceLang = "es"; // language of the HUD owner, can be changed from setup dialog
 string targetLang = "en"; // common language in local chat, can be changed from setup dialog
@@ -34,17 +37,23 @@ string SLslurl = "http://maps.secondlife.com/secondlife/Burning%20Man-%20Deep%20
 list langs = 
 [
 "Arabic",       "ar", 
-"Chinese",      "zh-TW",
+"Chinese",      "zh",
+"Chinese TW",   "zh-TW",
+"Danish",        "da",
 "Dutch",        "nl",
 "English",      "en",
 "French",       "fr",
 "German",       "de",
+"Hungarian",	"hu",
 "Italian",      "it",
 "Japanese",     "ja",
 "Korean",       "ko",
+"Polish",		"pl",
 "Portuguese",   "pt",
 "Russian",      "ru",
-"Spanish",      "es"    
+"Spanish",      "es",
+"Turkish",		"tr",
+"Ukranian",		"uk"
 ];
 
 list uDlgBtnLst( integer vIdxPag ) {
@@ -74,18 +83,26 @@ poll() {
 default {
 
     state_entry() {
-    	
-        //string server = llGetEnv("simulator_hostname");
-        //list serverParsed = llParseString2List(server,["."],[]);
-        //string grid = llList2String(serverParsed, llGetListLength(serverParsed) - 2);
+    
+        string server = llGetEnv("simulator_hostname");
+        list serverParsed = llParseString2List(server,["."],[]);
+        string grid = llList2String(serverParsed, llGetListLength(serverParsed) - 2);
+        string detectedLang = llGetSubString(llGetAgentLanguage(llGetOwner()),0,1);
     
         chan = 0x80000000 | (integer)("0x"+(string)llGetOwner());    // unique channel based on owners UUID   
         listenHandle = llListen(0, "","", "");
         listenHandle2 = llListen(hideChan, "",llGetOwner(), "");
         owner = llGetDisplayName(llGetOwner());
         string intromessage = "Resetting...\nOpen Translator " + version + " by Cuga Rajal and Xiija Anzu";
-        //if(grid == "lindenlab") { intromessage += "\nGet your free copy in SL at " + SLslurl; }
+        if(grid == "lindenlab") { intromessage += "\nGet your free copy in SL at " + SLslurl; }
         intromessage += "\nInstructions and source code at https://github.com/cuga-rajal/translator";
+        if(llListFindList( langs, [detectedLang] )!=-1) {
+            sourceLang = detectedLang;
+            intromessage += "\nSource language set to '" + 
+            llList2String(langs,llListFindList(langs,(list)detectedLang)-1) +
+            "' from viewer settings.";
+        }
+        else { intromessage += "\nLanguage '" + detectedLang + "' not found, please select source language manually."; }
         llOwnerSay(intromessage);
     }
     
