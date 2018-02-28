@@ -1,7 +1,6 @@
 # translator
 Translator Notes
-version  0.26
-Cuga Rajal, February 24, 2018
+version  0.26, February 24, 2018
 
 This is a free language translator by Cuga Rajal and Xiija Anzu.
 Compatible with Opensim and Second Life.
