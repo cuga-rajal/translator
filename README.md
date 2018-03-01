@@ -1,6 +1,6 @@
 # translator
 Translator Notes
-version  0.26, February 24, 2018
+version  0.30, February 28, 2018
 
 This is a free language translator by Cuga Rajal and Xiija Anzu.
 Compatible with Opensim and Second Life.
@@ -22,12 +22,13 @@ dialog can be used to change the source language, target language, or to
 enable/disable translation. It can also give the gesture object (see below)
 or to get these instructions.
 
-2) The Translator can be used when the HUD owner speaks a different language than
+2) Use the Translator when the HUD owner speaks a different language than
 local chat. The "source language" should be set to the HUD owner's language, and
 "target language" should be set to the local chat language.
 
-The first time you wear the HUD, it will detect your viewer preference settings and 
-configure the source language automatically.
+The first time you wear the HUD, it will detect your viewer preferences and 
+configure the source language automatically. Dialogs and instructions are in the
+native language of the wearer, based on the source language detected or selected.
 
 3) For best results, everyone wearing the HUD in proximity should use the same
 target language for local chat. Otherwise you may get duplication of translated
@@ -43,12 +44,11 @@ will not be sent to local chat. This can happen if the HUD owner is already
 speaking in the target language, or if the translation service doesn't recognize
 the language.
 
-5) When others speak in local chat (not the HUD owner) the phrases are sent for
-translation in the reverse direction. Chat messages are translated from the
-target language to the source language. The translated phrase is then sent to
-the HUD owner's local chat with llOwnerSay(), so only the HUD owner sees it. If
-the translated phrase is the same as the original, it will not be sent to local
-chat.
+5) When other people speak in local chat, the phrases are sent for translation
+in the reverse direction. Chat messages are translated from the target language
+to the source language. The translated phrase is then sent to the HUD owner's
+local chat with llOwnerSay(), so only the HUD owner sees it. If the translated
+phrase is the same as the original, it will not be sent to local chat.
 
 6) There is an optional Gesture that can be used with the translator.
 Use the dialog button "Get Gesture" to copy it to your inventory.
@@ -58,12 +58,24 @@ without also printing your original phrase, to further reduce chat clutter.
 To use the gesture, first make it active, then type "// " and then your phrase. 
 For example, "// Hello furries"
 
+
+Suggestions for in-world distribution:
+
+If you create your own translator object from this script, or import the .oxf
+linkset file, we recommend making the object no-modify so that someone doesn't
+alter the script contents in a prim with your name on it.
+
+In SL, we also make the object no-transfer. We ask that people visit the
+Burn2 Region to get the free translator, if they don't want to create it
+themselves from the free source.
+
+
 Issues:
 
 - There is a 16kb size limit per translation. Anything over that is truncated.
 
-- Excessive use can trigger Google's bot blockers to block the region's IP
-  address for a period. Usually Google restores access in 2 hours.
+- Excessive use can cause Google to block the translation service from the
+  region's IP address for a period. Usually Google restores access in 2 hours.
   In SL, restarting the sim can sometimes fix the issue as this usually
   reassigns the IP address.
 
@@ -71,11 +83,8 @@ Issues:
   
 - Opensim script engine currently has a bug that breaks llGetEnv() or
   llGetSimulatorHostname. So a section in state_entry() is temporarily
-  disabled.
-  
-Future plans:
+  disabled when using it in Opensim.
 
-- Translated dialogs
 
 This is a work in progress. Please notify me of bugs or feature requests.
 
