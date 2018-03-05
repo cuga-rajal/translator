@@ -1,4 +1,4 @@
-// Open Translate v.0.30 - Feb 28 2018
+// Open Translate v.0.32 - March 2, 2018
 // by Xiija Anzu and Cuga Rajal
 //
 // Put this script in a HUD and wear it. Click the HUD to open the configuration dialog and set language choices.
@@ -9,7 +9,7 @@
 // To view a copy of the license, visit:
 //  https://creativecommons.org/licenses/by-nc-sa/3.0/
 
-string version = "0.30"; 
+string version = "0.32"; 
 key XMLRequest;
 string sourceLang = "es"; // language of the HUD owner, can be changed from setup dialog
 string targetLang = "en"; // common language in local chat, can be changed from setup dialog
@@ -28,12 +28,15 @@ key id;
 integer handle;
 integer ttlPG;
 integer currPG = 0;
+integer vIntTtl;
 integer i;
 string langselect = "";
 integer active = 1;
 integer iLine;
 key kQuery;
 string notecard_name;
+integer manual_reset = FALSE;
+integer is_busy = TRUE;
 string SLslurl = "http://maps.secondlife.com/secondlife/Burning%20Man-%20Deep%20Hole/232/88/25";
 string dl_01;
 string dl_02;
@@ -41,20 +44,20 @@ string dl_03;
 string dl_04;
 string dl_05;
 string dl_06;
-string dl_07 = "Region IP XXX is blocked by translation service.";
-string dl_08 = "Translator has been disabled";
-string dl_09 = "Translator has been enabled";
-string dl_10 = "Source";
-string dl_11 = "Target";
-string dl_12 = "Change: ";
-string dl_13 = "Disable";
-string dl_14 = "Enable";
-string dl_15 = "Get Gesture";
-string dl_16 = "Instructions";
-string dl_17 = "Close";
-string dl_18 = "Current settings:";
-string dl_19 = "To use: activate the gesture, then type '//' and your message";
-string dl_20 = "Example: // hello furries";
+string dl_07;
+string dl_08;
+string dl_09;
+string dl_10;
+string dl_11;
+string dl_12;
+string dl_13;
+string dl_14;
+string dl_15;
+string dl_16;
+string dl_17;
+string dl_18;
+string dl_19;
+string dl_20;
 
 
 list dlog_list = [ "dl_01", "dl_02", "dl_03", "dl_04", "dl_05", "dl_06", "dl_07", "dl_08", "dl_09", "dl_10", 
@@ -70,7 +73,7 @@ list langs =
 "Dutch",        "nl",        "Nederlands",    "",
 "English",      "en",        "English",        "",
 "French",       "fr",        "Français",        "",
-"German",       "de",        "Deutche",        "",
+"German",       "de",        "Deutsch",        "",
 "Finnish",        "fi",        "Suomi",         "",
 "Hungarian",    "hu",        "Magyar",        "",
 "Italian",      "it",        "Italiano",        "",
@@ -88,7 +91,7 @@ list langs =
 list uDlgBtnLst( integer vIdxPag ) {
     if(langselect=="source") { gLstMnu = llList2ListStrided(llDeleteSubList(langs, 0, 1), 0, -1, 4); }
     else { gLstMnu = llList2ListStrided(llDeleteSubList(langs, 0, 2), 0, -1, 4); }
-    integer vIntTtl = -~((~(integer)([] != gLstMnu)) / 9);      //-- Total possible pages
+    vIntTtl = llCeil(llGetListLength(gLstMnu) / 9);      //-- Total possible pages
     integer vIdxBgn = vIdxPag * 9;
     string backbut;
     if(vIdxPag==0) { backbut=" "; } else { backbut = "<<"; }
@@ -102,7 +105,7 @@ list uDlgBtnLst( integer vIdxPag ) {
 
 poll() {
      XMLRequest = llHTTPRequest( url2 , [
-     HTTP_USER_AGENT, "XML-Getter/1.0 (Mozilla Compatible)", // HTTP_USER_AGENT not supported in Opensim, uncomment for SL
+     //HTTP_USER_AGENT, "XML-Getter/1.0 (Mozilla Compatible)", // HTTP_USER_AGENT not supported in Opensim, uncomment for SL
      HTTP_METHOD, "GET", 
      HTTP_MIMETYPE, "text/html;charset-utf8", 
      HTTP_BODY_MAXLENGTH,16384,
@@ -113,12 +116,14 @@ string str_replace(string src, string from, string to) {
     integer len = (~-(llStringLength(from)));
     if(~len) {
         string  buffer = src;
-        integer b_pos = ERR_GENERIC;
+        integer b_pos = -1;
         integer to_len = (~-(llStringLength(to)));
         @loop;//instead of a while loop, saves 5 bytes (and runs faster).
         integer to_pos = ~llSubStringIndex(buffer, from);
         if(to_pos) {
-            buffer = llGetSubString(src = llInsertString(llDeleteSubString(src, b_pos -= to_pos, b_pos + len), b_pos, to), (-~(b_pos += to_len)), 0x8000);
+            b_pos -= to_pos;
+            src = llInsertString(llDeleteSubString(src, b_pos, b_pos + len), b_pos, to);
+            buffer = llGetSubString(src, (-~(b_pos += to_len)), 0x8000);
             jump loop;
         }
     }
@@ -126,6 +131,7 @@ string str_replace(string src, string from, string to) {
 }
 
 translateMenus(string sourceLang) {
+    is_busy = TRUE;
     llOwnerSay("Resetting...");
     notecard_name = "dialogs_" + sourceLang;
     integer nFound=FALSE;
@@ -134,18 +140,19 @@ translateMenus(string sourceLang) {
     }
     if(! nFound) { llOwnerSay("Notecard '" + notecard_name + "' not found"); jump end; }
     iLine = 0;
-    kQuery = llGetNotecardLine(notecard_name, iLine);  // comment out this line for OpenSim    
-        // comment out the following lines for SL
-//     for(iLine=0; iLine<=osGetNumberOfNotecardLines(notecard_name); iLine++) {
-//         string NoteCardLine = osGetNotecardLine(notecard_name,iLine);
-//         if(llStringTrim(NoteCardLine, STRING_TRIM)=="") { jump break; }
-//         tmp = llParseString2List(NoteCardLine, ["="], []);
-//         string dlog = llStringTrim(llList2String(tmp,0), STRING_TRIM);
-//         string qval = llStringTrim(llList2String(tmp,1), STRING_TRIM);
-//         setVar(dlog, qval);
-//         @break;
-//     }
-    // end of section to comment out for SL
+//    kQuery = llGetNotecardLine(notecard_name, iLine);  // comment out this line for OpenSim    
+// comment out the following lines for SL
+     for(iLine=0; iLine<=osGetNumberOfNotecardLines(notecard_name); iLine++) {
+         string NoteCardLine = osGetNotecardLine(notecard_name,iLine);
+         if(llStringTrim(NoteCardLine, STRING_TRIM)=="") { jump break; }
+         list tmp = llParseString2List(NoteCardLine, ["="], ["|"]);
+         string dlog = llStringTrim(llList2String(tmp,0), STRING_TRIM);
+         string qval = llStringTrim(llList2String(tmp,1), STRING_TRIM);
+         setVar(dlog, qval);
+         @break;
+     }
+     finish();
+// end of section to comment out for SL
     @end;
 }
 
@@ -178,30 +185,38 @@ setVar(string dlog, string qval) {
 }
 
 finish() {
+        llOwnerSay("Finishing..");
         chan = 0x80000000 | (integer)("0x"+(string)llGetOwner());    // unique channel based on owners UUID   
         if(listenHandle==0) { listenHandle = llListen(0, "","", ""); }
         if(listenHandle2==0) { listenHandle2 = llListen(hideChan, "",llGetOwner(), ""); }
         owner = llGetDisplayName(llGetOwner());
         
-        string server = llGetEnv("simulator_hostname");
-        list serverParsed = llParseString2List(server,["."],[]);
-        string grid = llList2String(serverParsed, llGetListLength(serverParsed) - 2);
+        // Uncomment the following 5 lines for SL
+        //string server = llGetEnv("simulator_hostname");
+        //list serverParsed = llParseString2List(server,["."],[]);
+        //string grid = llList2String(serverParsed, llGetListLength(serverParsed) - 2);
         
         string intromessage = "\n" + dl_01;
-        if(grid == "lindenlab") { intromessage += "\n" + dl_02; }
+        //if(grid == "lindenlab") { intromessage += "\n" + dl_02; }
         intromessage += "\n" + dl_03;
         if(llListFindList( langs, [sourceLang] )!=-1) {
-            intromessage += "\n" + str_replace(dl_06, "XXX", llList2String(langs,llListFindList(langs,(list)sourceLang)+2));
+            if(manual_reset) {
+                intromessage += "\n" + str_replace(dl_04, "XXX", llList2String(langs,llListFindList(langs,(list)sourceLang)+2));
+            } else {
+                intromessage += "\n" + str_replace(dl_06, "XXX", llList2String(langs,llListFindList(langs,(list)sourceLang)+2));
+            }
+        
         } else {
             intromessage += "\nLanguage '" + llGetAgentLanguage(llGetOwner()) + "' not found, please select your language manually.";
         }
         llOwnerSay(intromessage);
+        manual_reset = TRUE;
+        is_busy = FALSE;
 }
 
 default {
 
     state_entry() {
-        
         string dl_01 = "Open Translator version " + version + " by Cuga Rajal and Xiija Anzu";
         string dl_02 = "Get your free copy in SL at " + SLslurl;
         string dl_03 = "Instructions and source code at https://github.com/cuga-rajal/translator";
@@ -209,13 +224,15 @@ default {
         string dl_05 = "Local Chat Language: English (en)";
 
         string detectedLang = llGetSubString(llGetAgentLanguage(llGetOwner()),0,1);
-        if(llListFindList( langs, [llGetAgentLanguage(llGetOwner())] )!=-1) {
+        if(detectedLang=="") {
+            sourceLang = "en";
+            manual_reset = TRUE;
+        } else if(llListFindList( langs, [llGetAgentLanguage(llGetOwner())] )!=-1) {
             sourceLang = llGetAgentLanguage(llGetOwner());
         } else if(llListFindList( langs, [detectedLang] )!=-1) {
             sourceLang = detectedLang;
         }
-        if((llListFindList( langs, [llGetAgentLanguage(llGetOwner())] )!=-1) ||
-           (llListFindList( langs, [detectedLang] )!=-1)) {
+        if(llListFindList( langs, [sourceLang] )!=-1) {
            translateMenus(sourceLang);
         } else {
             finish();
@@ -224,7 +241,8 @@ default {
  
     }
     
-    touch_start(integer total_number) {   
+    touch_start(integer total_number) {
+        if(is_busy) { return; }
         id = llDetectedKey(0);
         txt = dl_18 + "\n " + str_replace(dl_04, "XXX", llList2String(langs,llListFindList(langs,(list)sourceLang)+2)) +
         "\n " + str_replace(dl_05, "XXX", llList2String(langs,llListFindList(langs,(list)targetLang)+2)) + "\n\n" + dl_12;
@@ -293,8 +311,8 @@ default {
     listen( integer vIntChn, string vStrNom, key vKeySpk, string vStrMsg ) {
         if ((vIntChn == 0 ) || (vIntChn == hideChan)) { // hideChan is already filtered to hear only owner   
             spkrname = llGetDisplayName(vKeySpk);
-            if(spkrname=="") { jump skiptrans; }
-            if(vIntChn==0) { isHidden=0; }
+            if(spkrname=="") { jump skiptrans; } // Don't translate other translators!
+            if(vIntChn==0) { isHidden=0; }  // tells callback if the phrase came from gesture
             else { isHidden=1; }
             msg =  vStrMsg;
             url2 = "http://translate.googleapis.com/translate_a/single?client=gtx&sl=&dt=t&ie=UTF-8&oe=UTF-8";
@@ -326,12 +344,12 @@ default {
             llSetTimerEvent(20); 
         } else if(vStrMsg == ">>") {
             ++currPG;
-            if(currPG > ttlPG) { currPG = 1;}
+            if(currPG > vIntTtl) { currPG = 0;}
             llDialog(id, txt, uDlgBtnLst(currPG), chan );
             llSetTimerEvent(20); 
         } else if(vStrMsg == "<<") {
             --currPG;
-            if(currPG < 1) { currPG = ttlPG;}
+            if(currPG < 0) { currPG = vIntTtl;}
             llDialog(id, txt, uDlgBtnLst(currPG), chan );
             llSetTimerEvent(20); 
         } else if (vStrMsg == dl_17) { // Close
@@ -349,13 +367,20 @@ default {
             llGiveInventory( llGetOwner(), llGetInventoryName(INVENTORY_GESTURE, 0)  );
             llOwnerSay("\n" + dl_19 + "\n" + dl_20); // To use, type.. Example..
         } else if (vStrMsg == dl_16) { // Instructions
-            notecard_name = "instructions_" + sourceLang;
-            integer nFound2=FALSE;
-            for (i=0; i<llGetInventoryNumber(INVENTORY_NOTECARD);i++) {
-                if(notecard_name==llGetInventoryName(INVENTORY_NOTECARD, i)) { nFound2=TRUE; }
+            string helpurl = "";
+            if(sourceLang=="en") {
+                helpurl = "https://github.com/cuga-rajal/translator";
+            } else {
+                helpurl = "https://translate.google.com/translate?act=url&hl=en&ie=UTF8&sl=en&tl=" + sourceLang + "&u=https://github.com/cuga-rajal/translator";
             }
-            if(! nFound2) { notecard_name = "instructions_en"; }
-            llGiveInventory( llGetOwner(), notecard_name);
+            llLoadURL( llGetOwner(), "", helpurl );
+            //notecard_name = "instructions_" + sourceLang;
+            //integer nFound2=FALSE;
+            //for (i=0; i<llGetInventoryNumber(INVENTORY_NOTECARD);i++) {
+            //    if(notecard_name==llGetInventoryName(INVENTORY_NOTECARD, i)) { nFound2=TRUE; }
+            //}
+            //if(! nFound2) { notecard_name = "instructions_en"; }
+            //llGiveInventory( llGetOwner(), notecard_name);
         } else if (vStrMsg == dl_14) {
             active=1;
             llListenControl(listenHandle, TRUE);

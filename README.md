@@ -1,6 +1,6 @@
 # translator
 Translator Notes
-version  0.30, February 28, 2018
+version  0.32, March 2, 2018
 
 This is a free language translator by Cuga Rajal and Xiija Anzu.
 Compatible with Opensim and Second Life.
@@ -26,9 +26,12 @@ or to get these instructions.
 local chat. The "source language" should be set to the HUD owner's language, and
 "target language" should be set to the local chat language.
 
-The first time you wear the HUD, it will detect your viewer preferences and 
-configure the source language automatically. Dialogs and instructions are in the
-native language of the wearer, based on the source language detected or selected.
+The first time you wear the HUD, it will try to detect your viewer preferences
+configure the source language automatically. If it can not detect the viewer
+settings, it will default to English. Some versions of Singularity do not 
+support language detection. In this case, the source language can be set
+manually.
+
 
 3) For best results, everyone wearing the HUD in proximity should use the same
 target language for local chat. Otherwise you may get duplication of translated
@@ -62,27 +65,25 @@ For example, "// Hello furries"
 Suggestions for in-world distribution:
 
 If you create your own translator object from this script, or import the .oxf
-linkset file, we recommend making the object no-modify so that someone doesn't
-alter the script contents in a prim with your name on it.
+linkset file from github, we recommend making the object no-modify so that
+someone doesn't alter the script contents in a prim with your name on it.
 
-In SL, we also make the object no-transfer. We ask that people visit the
-Burn2 Region to get the free translator, if they don't want to create it
-themselves from the free source.
-
+In SL, the translator object is no-transfer. You can get your free copy by
+visiting Burn2 Region anytime. 
 
 Issues:
 
 - There is a 16kb size limit per translation. Anything over that is truncated.
 
-- Excessive use can cause Google to block the translation service from the
-  region's IP address for a period. Usually Google restores access in 2 hours.
-  In SL, restarting the sim can sometimes fix the issue as this usually
-  reassigns the IP address.
+- There have been cases where Google's "bot blockers" have been triggered by the
+  use of this Translator, causing the service to be unavailable for up to
+  2 hours. If this happens during use of the Translator, a message will be sent
+  to local chat informing the owner of the service being unavailable. 
 
   We are exploring other translation services that don't have this issue.
   
 - Opensim script engine currently has a bug that breaks llGetEnv() or
-  llGetSimulatorHostname. So a section in state_entry() is temporarily
+  llGetSimulatorHostname. So a section in state_entry() needs to be temporarily
   disabled when using it in Opensim.
 
 
