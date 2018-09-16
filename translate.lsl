@@ -8,7 +8,7 @@
 // This work is licensed under Creative Commons BY-NC-SA 3.0:
 //  https://creativecommons.org/licenses/by-nc-sa/3.0/
 
-string version = "0.32"; 
+string version = "0.33"; 
 key XMLRequest;
 string sourceLang = "es"; // language of the HUD owner, can be changed from setup dialog
 string targetLang = "en"; // common language in local chat, can be changed from setup dialog
