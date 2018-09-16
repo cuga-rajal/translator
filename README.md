@@ -1,6 +1,6 @@
 # translator
 Translator Notes
-version  0.32, March 2, 2018
+version  0.33, Sept 16, 2018
 
 This is a free language translator by Cuga Rajal and Xiija Anzu.
 Compatible with Opensim and Second Life.
@@ -10,8 +10,7 @@ Get the latest version of the script from: https://github.com/cuga-rajal
 In Second Life you can get a Translator at the Burn2 region:
   http://maps.secondlife.com/secondlife/Burning%20Man-%20Deep%20Hole/232/88/25
 
-This work is licensed under the Creative Commons BY-NC-SA 3.0 License.
-To view a copy of the license, visit:
+This work is licensed under Creative Commons BY-NC-SA 3.0:
   https://creativecommons.org/licenses/by-nc-sa/3.0/
 
 
@@ -76,16 +75,11 @@ Issues:
 - There is a 16kb size limit per translation. Anything over that is truncated.
 
 - There have been cases where Google's "bot blockers" have been triggered by the
-  use of this Translator, causing the service to be unavailable for up to
+  use of this Translator, causing the service to be blocked by Google for up to
   2 hours. If this happens during use of the Translator, a message will be sent
   to local chat informing the owner of the service being unavailable. 
 
   We are exploring other translation services that don't have this issue.
-  
-- Opensim script engine currently has a bug that breaks llGetEnv() or
-  llGetSimulatorHostname. So a section in state_entry() needs to be temporarily
-  disabled when using it in Opensim.
-
 
 This is a work in progress. Please notify me of bugs or feature requests.
 

@@ -1,12 +1,11 @@
-// Open Translate v.0.32 - March 2, 2018
+// Open Translate v.0.33 - Sept 16, 2018
 // by Xiija Anzu and Cuga Rajal
 //
 // Put this script in a HUD and wear it. Click the HUD to open the configuration dialog and set language choices.
 // This translator assumes the HUD owner speaks a different language than the local chat.
 // More information at https://github.com/cuga-rajal/translator
 //
-// This work is licensed under the Creative Commons BY-NC-SA 3.0 License.
-// To view a copy of the license, visit:
+// This work is licensed under Creative Commons BY-NC-SA 3.0:
 //  https://creativecommons.org/licenses/by-nc-sa/3.0/
 
 string version = "0.32"; 
@@ -140,19 +139,7 @@ translateMenus(string sourceLang) {
     }
     if(! nFound) { llOwnerSay("Notecard '" + notecard_name + "' not found"); jump end; }
     iLine = 0;
-//    kQuery = llGetNotecardLine(notecard_name, iLine);  // comment out this line for OpenSim    
-// comment out the following lines for SL
-     for(iLine=0; iLine<=osGetNumberOfNotecardLines(notecard_name); iLine++) {
-         string NoteCardLine = osGetNotecardLine(notecard_name,iLine);
-         if(llStringTrim(NoteCardLine, STRING_TRIM)=="") { jump break; }
-         list tmp = llParseString2List(NoteCardLine, ["="], ["|"]);
-         string dlog = llStringTrim(llList2String(tmp,0), STRING_TRIM);
-         string qval = llStringTrim(llList2String(tmp,1), STRING_TRIM);
-         setVar(dlog, qval);
-         @break;
-     }
-     finish();
-// end of section to comment out for SL
+    kQuery = llGetNotecardLine(notecard_name, iLine);
     @end;
 }
 
@@ -191,11 +178,9 @@ finish() {
         if(listenHandle2==0) { listenHandle2 = llListen(hideChan, "",llGetOwner(), ""); }
         owner = llGetDisplayName(llGetOwner());
         
-        // Uncomment the following 5 lines for SL
         //string server = llGetEnv("simulator_hostname");
         //list serverParsed = llParseString2List(server,["."],[]);
         //string grid = llList2String(serverParsed, llGetListLength(serverParsed) - 2);
-        
         string intromessage = "\n" + dl_01;
         //if(grid == "lindenlab") { intromessage += "\n" + dl_02; }
         intromessage += "\n" + dl_03;
