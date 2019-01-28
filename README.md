@@ -1,6 +1,7 @@
 # translator
 Translator Notes
-version  0.33, Sept 16, 2018
+version  0.34, January 28, 2019
+Readme updated 24 November 2018
 
 This is a free language translator by Cuga Rajal and Xiija Anzu.
 Compatible with Opensim and Second Life.
@@ -13,8 +14,30 @@ In Second Life you can get a Translator at the Burn2 region:
 This work is licensed under Creative Commons BY-NC-SA 3.0:
   https://creativecommons.org/licenses/by-nc-sa/3.0/
 
+**How to build from source:**
 
-How to use:
+You can import the .oxp object into your world and then take it into inventory,
+or build a new one using the files provided.
+
+To build your own,
+
+1) Save each of the dialog files ("dialogs_ar" etc.) as separate notecards
+2) Save a copy of these instructions in a notecard named "Translator Instructions".
+You can omit "How to build from source" section.
+3) Save the main script "translate.lsl" as a script
+4) Create a new gesture, using the name "Translate Helper".
+Set Trigger to "//" and set Replace With to "/-667" (without quotes).
+Save this to your inventory.
+4) Rez a cylinder .05 x .05 x .02. Place all the notecards, script and gesture described
+above into the contents.
+5) Name the cylinder "Translator" and take it into your inventory
+6) Wear the object as a HUD (Right click -> Attach to HUD -> Center)
+Edit the object and set the rotation to <0, 90, 270>.
+7) The HUD has no buttons. Clicking it opens a dialog box. All controls are made
+through the dialogs. You can decorate it and resize/reposition however you like. 
+
+
+**How to use:**
 
 1) Wear the Translator as a HUD. Click the Translator to open the dialog. The
 dialog can be used to change the source language, target language, or to
@@ -61,16 +84,16 @@ To use the gesture, first make it active, then type "// " and then your phrase.
 For example, "// Hello furries"
 
 
-Suggestions for in-world distribution:
+**Suggestions for in-world distribution:**
 
-If you create your own translator object from this script, or import the .oxf
+If you create your own translator object from this script, or import the .oxp
 linkset file from github, we recommend making the object no-modify so that
 someone doesn't alter the script contents in a prim with your name on it.
 
 In SL, the translator object is no-transfer. You can get your free copy by
 visiting Burn2 Region anytime. 
 
-Issues:
+**Issues:**
 
 - There is a 16kb size limit per translation. Anything over that is truncated.
 

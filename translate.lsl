@@ -1,14 +1,14 @@
-// Open Translate v.0.33 - Sept 16, 2018
+// Open Translate v.0.34 - January 29, 2019
 // by Xiija Anzu and Cuga Rajal
 //
-// Put this script in a HUD and wear it. Click the HUD to open the configuration dialog and set language choices.
+// Put this script in a prim and wear it as a HUD. Click the HUD to open a configuration dialog and set language choices.
 // This translator assumes the HUD owner speaks a different language than the local chat.
 // More information at https://github.com/cuga-rajal/translator
 //
 // This work is licensed under Creative Commons BY-NC-SA 3.0:
 //  https://creativecommons.org/licenses/by-nc-sa/3.0/
 
-string version = "0.33"; 
+string version = "0.34"; 
 key XMLRequest;
 string sourceLang = "es"; // language of the HUD owner, can be changed from setup dialog
 string targetLang = "en"; // common language in local chat, can be changed from setup dialog
@@ -97,6 +97,9 @@ list uDlgBtnLst( integer vIdxPag ) {
     string fwdbut;
     if(vIdxPag==vIntTtl) { fwdbut=" "; } else { fwdbut = ">>"; }
     list vLstRtn = llList2List( gLstMnu, vIdxBgn, vIdxBgn + 8 ) + backbut + dl_17 + fwdbut;
+	for(i=0; i<llGetListLength(vLstRtn); i++) { // trim each item to 24 chars
+		vLstRtn = llListReplaceList(vLstRtn, [llGetSubString(llList2String(vLstRtn, i),0,23)], i, i );
+	}
     return //-- fix the order for [L2R,T2B] and send it out
       llList2List( vLstRtn, -3, -1 ) + llList2List( vLstRtn, -6, -4 ) +
       llList2List( vLstRtn, -9, -7 ) + llList2List( vLstRtn, -12, -10 );
@@ -158,14 +161,14 @@ setVar(string dlog, string qval) {
     else if(dlog=="dl_07") { dl_07 = qval; }
     else if(dlog=="dl_08") { dl_08 = qval; }
     else if(dlog=="dl_09") { dl_09 = qval; }
-    else if(dlog=="dl_10") { dl_10 = qval; }
-    else if(dlog=="dl_11") { dl_11 = qval; }
-    else if(dlog=="dl_12") { dl_12 = qval; }
-    else if(dlog=="dl_13") { dl_13 = qval; }
-    else if(dlog=="dl_14") { dl_14 = qval; }
-    else if(dlog=="dl_15") { dl_15 = qval; }
-    else if(dlog=="dl_16") { dl_16 = qval; }
-    else if(dlog=="dl_17") { dl_17 = qval; }
+    else if(dlog=="dl_10") { dl_10 = llGetSubString(qval,0,23); }
+    else if(dlog=="dl_11") { dl_11 = llGetSubString(qval,0,23); }
+    else if(dlog=="dl_12") { dl_12 = llGetSubString(qval,0,23); }
+    else if(dlog=="dl_13") { dl_13 = llGetSubString(qval,0,23); }
+    else if(dlog=="dl_14") { dl_14 = llGetSubString(qval,0,23); }
+    else if(dlog=="dl_15") { dl_15 = llGetSubString(qval,0,23); }
+    else if(dlog=="dl_16") { dl_16 = llGetSubString(qval,0,23); }
+    else if(dlog=="dl_17") { dl_17 = llGetSubString(qval,0,23); }
     else if(dlog=="dl_18") { dl_18 = qval; }
     else if(dlog=="dl_19") { dl_19 = qval; }
     else if(dlog=="dl_20") { dl_20 = qval; }
