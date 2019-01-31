@@ -1,6 +1,6 @@
 # translator
 Translator Notes
-version  0.34, January 28, 2019
+version  0.35, January 31, 2019
 Readme updated 24 November 2018
 
 This is a free language translator by Cuga Rajal and Xiija Anzu.
