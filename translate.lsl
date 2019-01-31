@@ -1,4 +1,4 @@
-// Open Translate v.0.34 - January 29, 2019
+// Open Translate v.0.35 - January 31, 2019
 // by Xiija Anzu and Cuga Rajal
 //
 // Put this script in a prim and wear it as a HUD. Click the HUD to open a configuration dialog and set language choices.
@@ -8,7 +8,7 @@
 // This work is licensed under Creative Commons BY-NC-SA 3.0:
 //  https://creativecommons.org/licenses/by-nc-sa/3.0/
 
-string version = "0.34"; 
+string version = "0.35"; 
 key XMLRequest;
 string sourceLang = "es"; // language of the HUD owner, can be changed from setup dialog
 string targetLang = "en"; // common language in local chat, can be changed from setup dialog
@@ -80,6 +80,7 @@ list langs =
 "Korean",       "ko",        "한국어",            "",
 "Polish",        "pl",        "Polski",        "",
 "Portuguese",   "pt",        "Português",    "",
+"Romanian",      "ro",        "Română",        "",
 "Russian",      "ru",        "Pусский",        "",
 "Spanish",      "es",        "Español",        "",
 "Swedish",        "sv",         "Svenska",         "",
