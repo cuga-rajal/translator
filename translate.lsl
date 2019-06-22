@@ -1,4 +1,4 @@
-// Open Translate v.0.35 - January 31, 2019
+// Open Translate v.0.36 - June 21, 2019
 // by Xiija Anzu and Cuga Rajal
 //
 // Put this script in a prim and wear it as a HUD. Click the HUD to open a configuration dialog and set language choices.
@@ -8,7 +8,7 @@
 // This work is licensed under Creative Commons BY-NC-SA 3.0:
 //  https://creativecommons.org/licenses/by-nc-sa/3.0/
 
-string version = "0.35"; 
+string version = "0.36"; 
 key XMLRequest;
 string sourceLang = "es"; // language of the HUD owner, can be changed from setup dialog
 string targetLang = "en"; // common language in local chat, can be changed from setup dialog
@@ -266,7 +266,7 @@ default {
 
     http_response(key k,integer status, list meta, string body) { 
         if(k ==  XMLRequest) {
-            if(status == 503) {
+            if((status == 503) || (status == 429)) {
                 url2 = "http://ip-api.com/json";
                 isHidden=2;
                 poll();
@@ -283,6 +283,7 @@ default {
             for(i=0; i<llGetListLength(phraselist); i++) {
                 if(i %2==1) { jump next; } // Why this is required? Bug fix? 
                 list thisphrase = llParseString2List(llList2String(phraselist,i),[ "\"" ], [ "\",\"" ]);
+                if(llList2String(thisphrase,0) ==",null,") {  jump next; }
                 translatedmessage += llList2String(thisphrase,0);
                 @next;
             }
