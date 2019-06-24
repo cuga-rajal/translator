@@ -1,4 +1,4 @@
-// Open Translate v.0.36 - June 21, 2019
+// Open Translate v.0.37 - June 23, 2019
 // by Xiija Anzu and Cuga Rajal
 //
 // Put this script in a prim and wear it as a HUD. Click the HUD to open a configuration dialog and set language choices.
@@ -8,10 +8,10 @@
 // This work is licensed under Creative Commons BY-NC-SA 3.0:
 //  https://creativecommons.org/licenses/by-nc-sa/3.0/
 
-string version = "0.36"; 
+string version = "0.37"; 
 key XMLRequest;
 string sourceLang = "es"; // language of the HUD owner, can be changed from setup dialog
-string targetLang = "en"; // common language in local chat, can be changed from setup dialog
+string targetLang = "fr"; // common language in local chat, can be changed from setup dialog
 string msg = "a bunny";
 string url2;
 integer listenHandle = 0;
@@ -98,9 +98,9 @@ list uDlgBtnLst( integer vIdxPag ) {
     string fwdbut;
     if(vIdxPag==vIntTtl) { fwdbut=" "; } else { fwdbut = ">>"; }
     list vLstRtn = llList2List( gLstMnu, vIdxBgn, vIdxBgn + 8 ) + backbut + dl_17 + fwdbut;
-	for(i=0; i<llGetListLength(vLstRtn); i++) { // trim each item to 24 chars
-		vLstRtn = llListReplaceList(vLstRtn, [llGetSubString(llList2String(vLstRtn, i),0,23)], i, i );
-	}
+    for(i=0; i<llGetListLength(vLstRtn); i++) { // trim each item to 24 chars
+        vLstRtn = llListReplaceList(vLstRtn, [llGetSubString(llList2String(vLstRtn, i),0,23)], i, i );
+    }
     return //-- fix the order for [L2R,T2B] and send it out
       llList2List( vLstRtn, -3, -1 ) + llList2List( vLstRtn, -6, -4 ) +
       llList2List( vLstRtn, -9, -7 ) + llList2List( vLstRtn, -12, -10 );
