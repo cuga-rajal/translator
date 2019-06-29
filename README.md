@@ -1,7 +1,6 @@
 # translator
 Translator Notes
-version  0.37, June 23, 2019
-Readme updated 24 November 2018
+version  0.38, June 29, 2019
 
 This is a free language translator by Cuga Rajal and Xiija Anzu.
 Compatible with Opensim and Second Life.
@@ -13,6 +12,9 @@ In Second Life you can get a Translator at the Burn2 region:
 
 This work is licensed under Creative Commons BY-NC-SA 3.0:
   https://creativecommons.org/licenses/by-nc-sa/3.0/
+  
+**Important note:**
+Please upgrade to the latest version. Google changed their API which broke the old version of the translator.
 
 **How to build from source:**
 

@@ -1,4 +1,4 @@
-// Open Translate v.0.37 - June 23, 2019
+// Open Translate v.0.38 - June 29, 2019
 // by Xiija Anzu and Cuga Rajal
 //
 // Put this script in a prim and wear it as a HUD. Click the HUD to open a configuration dialog and set language choices.
@@ -8,10 +8,10 @@
 // This work is licensed under Creative Commons BY-NC-SA 3.0:
 //  https://creativecommons.org/licenses/by-nc-sa/3.0/
 
-string version = "0.37"; 
+string version = "0.38"; 
 key XMLRequest;
 string sourceLang = "es"; // language of the HUD owner, can be changed from setup dialog
-string targetLang = "fr"; // common language in local chat, can be changed from setup dialog
+string targetLang = "en"; // common language in local chat, can be changed from setup dialog
 string msg = "a bunny";
 string url2;
 integer listenHandle = 0;
@@ -278,16 +278,13 @@ default {
                 return;
             }
             string returnstring = llUnescapeURL( body );
+            list jsonlist = llJson2List(llList2String(llJson2List(returnstring), 0));          
             string translatedmessage = "";
-            list phraselist = llParseString2List(returnstring,[ "[", "]" ], [ "],[" ]);
-            for(i=0; i<llGetListLength(phraselist); i++) {
-                if(i %2==1) { jump next; } // Why this is required? Bug fix? 
-                list thisphrase = llParseString2List(llList2String(phraselist,i),[ "\"" ], [ "\",\"" ]);
-                if(llList2String(thisphrase,0) ==",null,") {  jump next; }
+            for(i=0; i<llGetListLength(jsonlist); i++) {
+                list thisphrase = llJson2List(llList2String(jsonlist,i));
                 translatedmessage += llList2String(thisphrase,0);
                 @next;
             }
-            
             if(msg == translatedmessage) { jump skipme; }
             if((owner==spkrname) || (isHidden==1)) {
                llSay(0,owner + ": "  + translatedmessage);
