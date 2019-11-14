@@ -2,6 +2,19 @@
 Translator Notes
 version  0.38, June 29, 2019
 
+**Currently Out Of Order**
+
+November 9, 2019 
+
+Regrettably, the translation service this translator used -- Google's
+non-keyed version -- changed something on their end and broke the
+translator. It is currently out of order until we have time to
+investigate and re-program the translation API feature.
+
+We are very sorry for any inconvenience.
+
+-------------
+
 This is a free language translator by Cuga Rajal and Xiija Anzu.
 Compatible with Opensim and Second Life.
 
