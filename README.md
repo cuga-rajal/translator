@@ -1,7 +1,5 @@
 # translator
 Translator Notes
-version  0.38, June 29, 2019
-
 **Currently Out Of Order**
 
 November 9, 2019 
