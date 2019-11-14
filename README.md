@@ -1,5 +1,6 @@
 # translator
 Translator Notes
+
 **Currently Out Of Order**
 
 November 9, 2019 
